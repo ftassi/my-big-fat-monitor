@@ -1,0 +1,3 @@
+#! /bin/sh
+xrandr --delmonitor left --delmonitor center --delmonitor right
+i3-msg reload

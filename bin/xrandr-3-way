@@ -1,0 +1,8 @@
+#! /bin/sh
+xrandr --delmonitor left --delmonitor center --delmonitor right
+xrandr --setmonitor left 1280/300x1440/340+0+0 DisplayPort-2 \
+    --setmonitor center 2560/600x1440/340+1280+0 none \
+    --setmonitor right 1280/300x1440/340+3840+0 none
+xrandr --fb 5120x1440
+feh --bg-scale --no-xinerama ~/.local/share/backgrounds/space-exploration.png
+i3-msg reload

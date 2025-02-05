@@ -1,0 +1,4 @@
+#! /bin/sh
+xrandr --delmonitor left --delmonitor center --delmonitor right
+xrandr --setmonitor UltraWide auto DisplayPort-2,HDMI-A-0
+feh --bg-scale ~/.local/share/backgrounds/space-exploration.png
