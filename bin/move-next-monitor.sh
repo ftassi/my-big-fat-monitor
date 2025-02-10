@@ -1,5 +1,15 @@
 #!/bin/sh
 
+LOGFILE="/tmp/move-next-monitor.log"
+
+# Funzione per scrivere nel log
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOGFILE"
+}
+
+# Inizia il log
+log "=== Moving workspace to another virtual monitor ==="
+
 # Ottieni il workspace attivo
 CURRENT_WS=$(i3-msg -t get_workspaces | jq -r '.[] | select(.focused).name')
 
@@ -9,14 +19,14 @@ I3_OUTPUTS=$(i3-msg -t get_outputs | jq -r '.[] | select(.active) | .name')
 # Trova il monitor attuale secondo i3
 CURRENT_OUTPUT=$(i3-msg -t get_workspaces | jq -r ".[] | select(.focused).output")
 
-# # Debugging: stampa informazioni
-echo "Current workspace: $CURRENT_WS"
-echo "Current output: $CURRENT_OUTPUT"
-echo "Available i3 outputs: $I3_OUTPUTS"
+# Log informazioni
+log "Current workspace: $CURRENT_WS"
+log "Current output: $CURRENT_OUTPUT"
+log "Available i3 outputs: $I3_OUTPUTS"
 
 # Se non ci sono output disponibili, esci con errore
 if [ -z "$I3_OUTPUTS" ]; then
-    echo "Errore: Nessun output disponibile."
+    log "Errore: Nessun output disponibile."
     exit 1
 fi
 
@@ -40,11 +50,11 @@ fi
 
 # Se ancora non abbiamo un output valido, esci con errore
 if [ -z "$NEXT_OUTPUT" ]; then
-    echo "Errore: Nessun output disponibile per spostare il workspace."
+    log "Errore: Nessun output disponibile per spostare il workspace."
     exit 1
 fi
 
-echo "Moving workspace to: $NEXT_OUTPUT"
+log "Moving workspace to: $NEXT_OUTPUT"
 
 # Sposta il workspace al prossimo monitor
-i3-msg "move workspace to output $NEXT_OUTPUT"
+i3-msg "move workspace to output $NEXT_OUTPUT" >> "$LOGFILE" 2>&1
