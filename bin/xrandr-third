@@ -1,7 +1,24 @@
-#! /bin/sh
+#!/bin/sh
+
+# Identifica l'output corretto
+OUTPUT=$(xrandr --query | awk '/ connected / {print $1}' | grep -E 'DisplayPort|DP|HDMI' | head -n 1)
+
+if [ -z "$OUTPUT" ]; then
+    echo "Nessun output esterno rilevato, uscita..."
+    exit 1
+fi
+
+echo "Usando output: $OUTPUT"
+
+# Rimuove i monitor virtuali precedenti
 xrandr --delmonitor left --delmonitor center --delmonitor right
-xrandr --setmonitor left 1706/400x1440/340+0+0 DisplayPort-2 \
-    --setmonitor right 3414/800x1440/340+1706+0 none
+
+# Imposta i nuovi monitor virtuali
+xrandr --setmonitor left 1706/400x1440/340+0+0 "$OUTPUT" \
+       --setmonitor right 3414/800x1440/340+1706+0 none
+
+# Imposta la dimensione totale dello schermo
 xrandr --fb 5120x1440
-feh --bg-scale --no-xinerama ~/.local/share/backgrounds/space-exploration.png
+
+# Ricarica i3
 i3-msg reload

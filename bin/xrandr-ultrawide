@@ -1,4 +1,17 @@
-#! /bin/sh
+#!/bin/sh
+
+# Identifica l'output corretto
+OUTPUT=$(xrandr --query | awk '/ connected / {print $1}' | grep -E 'DisplayPort|DP|HDMI' | head -n 1)
+
+if [ -z "$OUTPUT" ]; then
+    echo "Nessun output esterno rilevato, uscita..."
+    exit 1
+fi
+
+echo "Usando output: $OUTPUT"
+
+# Rimuove i monitor virtuali precedenti
 xrandr --delmonitor left --delmonitor center --delmonitor right
-xrandr --setmonitor UltraWide auto DisplayPort-2,HDMI-A-0
-feh --bg-scale ~/.local/share/backgrounds/space-exploration.png
+
+# Imposta il monitor virtuale UltraWide
+xrandr --setmonitor UltraWide auto "$OUTPUT"
